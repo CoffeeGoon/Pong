@@ -1,0 +1,28 @@
+# depslib dependency file v1.0
+1435618256 source:c:\users\kai\documents\dev\goalmaker\main.cpp
+	<SFML/System.hpp>
+	<SFML/Window.hpp>
+	<SFML/Graphics.hpp>
+	<iostream>
+	<ctime>
+	<cmath>
+	<sstream>
+	"stage.h"
+	"paddle.h"
+
+1435612041 c:\users\kai\documents\dev\goalmaker\include\stage.h
+	<SFML/Graphics.hpp>
+	<cmath>
+
+1435614431 c:\users\kai\documents\dev\goalmaker\include\paddle.h
+	<SFML/Graphics.hpp>
+
+1435618018 source:c:\users\kai\documents\dev\goalmaker\src\paddle.cpp
+	"paddle.h"
+
+1435616032 source:c:\users\kai\documents\dev\goalmaker\src\stage.cpp
+	<SFML/Graphics.hpp>
+	<ctime>
+	<iostream>
+	"stage.h"
+
