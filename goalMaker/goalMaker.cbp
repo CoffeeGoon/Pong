@@ -34,6 +34,10 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="Gabriola.ttf" />
+		<Unit filename="Jump-SoundBible.com-1007297584.wav" />
+		<Unit filename="applause.wav" />
+		<Unit filename="bin/Debug/libsndfile-1.dll" />
+		<Unit filename="bin/Debug/openal32.dll" />
 		<Unit filename="include/paddle.h" />
 		<Unit filename="include/stage.h" />
 		<Unit filename="main.cpp" />

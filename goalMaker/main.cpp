@@ -1,4 +1,6 @@
+
 #include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -11,8 +13,17 @@
 using namespace std;
 
 int main(){
+    bool cheery = true;
+    bool bounce = false;
+
   sf::RenderWindow window(sf::VideoMode(1000, 500), "Table Tennis");
   bool startscreen = true;
+  sf::SoundBuffer boune;
+  if(!boune.loadFromFile("Jump-SoundBible.com-1007297584.wav")){ cout << "youch" << endl;}
+  sf::SoundBuffer cheer;
+  if(!cheer.loadFromFile("applause.wav")){ cout << "youch" << endl;}
+   sf::Sound sound1(boune);
+   sf::Sound sound2(cheer);
   sf::Texture powcon[3];
   if(!powcon[0].loadFromFile("src/p1.png")){ cout << "youch" << endl;}
    if(!powcon[1].loadFromFile("src/p2.png")){cout<< "youch" <<endl;}
@@ -24,7 +35,7 @@ int main(){
     }
 
   string titl = "Table Tennis Tri";
-  string pl1 = "One Player \n \n  (powerups are triggered with the A S D keys)";
+  string pl1 = "One Player \n \npowerups are triggered with the D F G keys, movement with A Z, \n P2 powerups are triggered with the J K L keys, movement with Arrows,";
   string pl2 = "Two Player";
   sf::Font font;
   if(!font.loadFromFile("Gabriola.ttf")){
@@ -82,6 +93,7 @@ int main(){
                 player2 = paddle();
                 player2.setX();
                 daGame.setBall(18, player1.getY());
+                daGame.setGT(1);
                 opt2.setColor(sf::Color::Yellow);
              }
 
@@ -92,7 +104,7 @@ int main(){
        if(!startscreen){
             bool press = false;
              int direction = 0;
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
             press = true;
             direction = 1;
             if(daGame.getKen() && whosP == 0){
@@ -100,7 +112,7 @@ int main(){
 
             }
           }
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z)){
             press = true;
             if(daGame.getKen() && whosP == 0){
                 daGame.bshift(0);
@@ -111,7 +123,7 @@ int main(){
            if(!player2.getBot()){
           bool press2 = false;
           direction = 0;
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::O)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
             press2 = true;
             direction = 1;
             if(daGame.getKen() && whosP == 1){
@@ -119,7 +131,7 @@ int main(){
 
             }
           }
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
             press2 = true;
             if(daGame.getKen() && whosP == 1){
                 daGame.bshift(0);
@@ -142,7 +154,7 @@ int main(){
             daGame.smack(player2.getV());
           }
           }
-          if( sf::Keyboard::isKeyPressed(sf::Keyboard::A) || player1.getA() ){
+          if( sf::Keyboard::isKeyPressed(sf::Keyboard::D) || player1.getA() ){
                 bool defaul = false;
           if(daGame.getPtype() == 1 && whosP == 0){
             defaul = true;
@@ -171,7 +183,7 @@ int main(){
             }
           }
 
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)){
             bool defaul = false;
             if(daGame.getPtype() == 2 && whosP == 0){
                 daGame.genBar(1);
@@ -184,7 +196,7 @@ int main(){
             }
           }
 
-          if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)){
+          if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)){
             bool defaul = false;
             if(daGame.getPtype() == 3 && whosP == 0){
                 daGame.useKenisis();
@@ -207,14 +219,20 @@ int main(){
           bool create  = daGame.genPowerup();
            if(create && whichP == 0 && ! daGame.getS()){
             whichP = (tessel % 3) + 1;
-            cout << "Which P? " << whichP << endl;
             int* loc = daGame.getCor();
             icons[whichP - 1].setPosition(loc[0], loc[1]);
-              cout << loc[0] << " " << loc[1] << endl;
+
           }
 
 
           daGame.checkPaddle(player1.getY(), player1.getV(), player2.getY(), player2.getV());
+           if(daGame.boun && bounce){
+             bounce = false;
+            sound1.play();
+           }
+           if(!daGame.boun){
+            bounce = true;
+           }
           if(player2.getBot() || ! daGame.P2turn() ){
           daGame.update(player1.getY());
           }
@@ -226,18 +244,17 @@ int main(){
             int bx = daGame.ballx() + 30;
             int by = daGame.bally() + 30;
             if(bx - 10 > icons[whichP - 1].getPosition().x  && bx < icons[whichP - 1].getPosition().x + 60
-               && by > icons[whichP - 1].getPosition().y - 10 && by < icons[whichP - 1].getPosition().y + 80){
+               && by > icons[whichP - 1].getPosition().y - 30 && by < icons[whichP - 1].getPosition().y + 80){
                 daGame.setPtype(whichP);
-
+                   whosP = 1;
                 if(daGame.getVX() > 0){
                     whosP = 0;
                 }
-
                  else if(player2.getBot()){
                     daGame.setPtype(whichP);
                     if(whichP == 2){
                     daGame.genBar(2);}
-                    if(whichP == 1){
+                    else if(whichP == 1){
                         player2.aim(true);
                     }
                     else if(whichP == 3){
@@ -267,6 +284,21 @@ int main(){
            window.draw(opt2);
        }
        else{
+            if(daGame.getServe() && cheery){
+                    cheery = false;
+                    cout << " zoinks! " << endl;
+            sound2.play();
+           }
+           if(!daGame.getServe()){
+            cheery = true;
+           }
+           if(daGame.boun && bounce){
+             bounce = false;
+            sound1.play();
+           }
+           if(!daGame.boun){
+            bounce = true;
+           }
 
         stringstream ss;
         sf::Text unscore;
@@ -282,7 +314,7 @@ int main(){
             fin = "Player 2 wins!";
         }
         if(daGame.play1score() > 10 || daGame.play2score() > 10){
-            temp += " \n       " + fin;
+            temp += " \n   " + fin;
         }
          unscore.setString(temp);
          unscore.setCharacterSize(30);

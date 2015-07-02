@@ -15,8 +15,10 @@ stage::stage()
     powercoord[0] = (rand() % 500) + 300;
     powercoord[1] = (rand() % 300) + 100;
     upper.setPosition(0,0);
+    scorn = false;
     lower.setPosition(0, 490);
     ptype = 0;
+    boun = false;
     prep = false;
     aimcount = 0;
     kenisis = false;
@@ -39,6 +41,8 @@ stage::stage()
 void stage::reset(){
 p1score = 0;
 p2score = 0;
+gametype = 0;
+scorn = false;
 aimcount = 0;
 gameover = false;
 ptype = 0;
@@ -48,6 +52,7 @@ powerup = false;
     serve = true;
     gameover = false;
     collide = false;
+    boun = false;
     velocity[0] = 0;
     velocity[1] = 0;
     for(int i = 0; i < 5; i++){
@@ -63,7 +68,7 @@ stage::~stage()
 bool stage::genPowerup(){
 if(!powerup && ptype == 0 && !serve){
     srand(time(0));
-     cout << "chance " << chance << endl;
+
     if(chance < rand() % 100){
         powerup = true;
         chance = 99;
@@ -142,6 +147,7 @@ void stage::update(int paddley){
                 sf::Vector2f tempdown = lower.getPosition();
                  if(temp.y < tempup.y){
                     collide = true;
+                    boun = true;
                     velocity[1] = -velocity[1];
                     velocity[0] = velocity[0] + velocity[0]/10;
                     if(velocity[0] > 40){
@@ -153,6 +159,7 @@ void stage::update(int paddley){
                  }
             else if(temp.y + 60 > tempdown.y){
                     collide = true;
+                    boun = true;
                 velocity[1] = -(velocity[1] + velocity[1]/15);
                 velocity[0] = velocity[0] + velocity[0]/10;
                  if(velocity[0] > 40){
@@ -167,13 +174,17 @@ void stage::update(int paddley){
                 chance -= 20;
                 serve = true;
                 collide = false;
+                boun = false;
             }
             if(temp.x > 1060){
                 p1score++;
                 chance -= 20;
                 serve = true;
+                if(gametype == 1){
                 turn2 = true;
+                }
                 collide = false;
+                boun = false;
             }
             if(!serve && !collide){
                 ball.move(velocity[0], velocity[1]);
@@ -185,14 +196,17 @@ void stage::update(int paddley){
                 if(temp.x < -30){
                         chance -= 20;
                 p2score++;
+                scorn = true;
                 serve = true;
             }
             if(temp.x > 1030){
                 p1score++;
+                scorn = true;
                 chance -= 20;
                 serve = true;
             }
             collide = false;
+            boun = false;
         }
 
 
@@ -210,6 +224,7 @@ void stage::checkPaddle(float paddle1, float v1, float paddle2, float v2){
       int tempy = (int)(pos.y + 30);
       if(tempx < 20 && tempy > paddle1 && tempy < paddle1 + 100 ){
         collide = true;
+        boun = true;
         chance -= 5;
         if(powerup && ptype == 1 && prep){
             aimcount++;
@@ -237,6 +252,7 @@ void stage::checkPaddle(float paddle1, float v1, float paddle2, float v2){
       }
       else if(tempx > 920 && tempy > paddle2 && tempy < paddle2 + 100){
             collide = true;
+            boun = true;
              chance -= 5;
             if(prep && powerup && ptype == 1){
             aimcount++;
@@ -268,6 +284,7 @@ void stage::checkPaddle(float paddle1, float v1, float paddle2, float v2){
                     if(tempx < bar[i].getPosition().x + 10 && tempy > bar[i].getPosition().y && tempy < bar[i].getPosition().y +  70){
                         transparent[i] = false;
         collide = true;
+        boun = true;
         double middle = bar[i].getPosition().y + 40;
         double vshift = 0;
         if(tempy > middle + 10){
@@ -287,6 +304,7 @@ void stage::checkPaddle(float paddle1, float v1, float paddle2, float v2){
                     if(tempx + 60 > bar[i].getPosition().x  && tempy > bar[i].getPosition().y && tempy < bar[i].getPosition().y +  70){
                         transparent[i] = false;
         collide = true;
+        boun = true;
         double middle = bar[i].getPosition().y + 40;
         double vshift = 0;
         if(tempy > middle + 10){
@@ -315,6 +333,7 @@ void stage::checkPaddle(float paddle1, float v1, float paddle2, float v2){
 
 void stage::smack(float v){
     velocity[0] = 8;
+   // scorn = false;
     if(turn2){
         velocity[0] = -8;
         turn2 = false;

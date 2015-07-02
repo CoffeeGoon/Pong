@@ -10,6 +10,7 @@ class stage
          int play1score();
          int play2score();
          int ballx();
+         bool boun;
          int bally();
          void genBar(int play);
          void smack(float vy);
@@ -20,6 +21,7 @@ class stage
          void checkPaddle(float paddle1,float v1, float paddle2, float v2);
          void changeBV(int vx, int vy);
          bool getS(){ return serve; }
+         bool getCol(){ return collide;}
          void setPrep(bool k){ prep = k;}
          bool getPrep(){ return prep; }
          int getVX(){ return velocity[0]; }
@@ -31,7 +33,9 @@ class stage
          bool P2turn(){ return turn2;}
          void useKenisis(){kenisis = true;}
          bool getKen(){return kenisis;}
+         bool getServe(){ return serve;}
          bool genPowerup();
+         void setGT(int n){ gametype = n;}
          void setPtype(int n){ ptype = n;}
          int getPtype(){ return ptype;}
          void bshift(int dir);
@@ -49,6 +53,7 @@ class stage
     private:
         double velocity[2];
         int aimcount;
+        int gametype = 0;
         int powercoord[2];
         sf::RectangleShape upper;
         sf::RectangleShape lower;
@@ -57,6 +62,7 @@ class stage
         bool kenisis;
         sf::CircleShape  ball;
         bool serve;
+        bool scorn;
         bool prep;
         bool turn2 = false;
         bool gameover;
